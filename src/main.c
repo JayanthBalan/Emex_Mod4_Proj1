@@ -1,41 +1,55 @@
-/**************************************************************************************************************************************************************
-*Title		: main function(Driver function)
-*Description	: This function is used as the driver function for the all the functions
-***************************************************************************************************************************************************************/
+
 #include "apc.h"
 
-int main()
+int main(int argc, int argv[])
 {
-	/* Declare the pointers */
-	Dlist *head1, *tail1, *head2, *tail2, *headR;
-	char option, operator;
+	if(argc != 4) {
+		fprintf(stdout, "%s>>> Example Command: ./apc 324 + -1234\n", __FILE__);
+		return fail;
+	}
 
-	do
-	{
-		/* Code for reading the inputs */
+	Dlist_t *ip_1, *ip_2, *op;
+	ret_types_e retno;
 
-		/* Function for extracting the operator */
+	retno = convertStrDll(argv[1], ip_1);
+	if(retno == fail) {
+		return fail;
+	}
+	retno = convertStrDll(argv[3], ip_2);
+	if(retno == fail) {
+		return fail;
+	}
 
-		switch (operator)
-		{
-			case '+':
-				/* call the function to perform the addition operation */
-				break;
-			case '-':	
-				/* call the function to perform the subtraction operation */
-				break;
-			case '*':	
-				/* call the function to perform the multiplication operation */
-				break;
-			case '/':	
-				/* call the function to perform the division operation */
-				break;
-			default:
-				printf("Invalid Input:-( Try again...\n");
-		}
-		printf("Want to continue? Press [yY | nN]: ");
-		scanf("\n%c", &option);
-	}while (option == 'y' || option == 'Y');
+	char operator = argv[2];
 
-	return 0;
+	switch (operator) {
+		case '+':
+			retno = addition(ip_1, ip_2, op);
+			if(retno == pass) {
+				display_dll(*op);
+			}
+			break;
+		case '-':
+			retno = subtraction(ip_1, ip_2, op);
+			if(retno == pass) {
+				display_dll(*op);
+			}
+			break;
+		case '*':
+			retno = multiplication(ip_1, ip_2, op);
+			if(retno == pass) {
+				display_dll(*op);
+			}
+			break;
+		case '/':
+			retno = division(ip_1, ip_2, op);
+			if(retno == pass) {
+				display_dll(*op);
+			}
+			break;
+		default:
+			fprintf(stderr, "%s>>> Unsupported Operation\n", __FILE__);
+	}
+
+	return retno;
 }

@@ -1,16 +1,12 @@
+
 #ifndef APC_H
 #define APC_H
-#define SUCCESS 0
-#define FAILURE -1
 
-typedef int data_t;
-typedef struct node
-{
-	struct node *prev;
-	data_t data;
-	struct node *next;
-}Dlist;
+#include "dll.h"
 
-/* Include the prototypes here */
+ret_types_e addition(Dlist_t*, Dlist_t*, Dlist_t*);
+ret_types_e subtraction(Dlist_t*, Dlist_t*, Dlist_t*);
+ret_types_e multiplication(Dlist_t*, Dlist_t*, Dlist_t*);
+ret_types_e division(Dlist_t*, Dlist_t*, Dlist_t*);
 
 #endif
