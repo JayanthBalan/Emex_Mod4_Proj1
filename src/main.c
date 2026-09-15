@@ -8,14 +8,14 @@ int main(int argc, int argv[])
 		return fail;
 	}
 
-	Dlist_t *ip_1, *ip_2, *op;
+	Dlist_t ip_1, ip_2, op;
 	ret_types_e retno;
 
-	retno = convertStrDll(argv[1], ip_1);
+	retno = convertStrDll(argv[1], &ip_1);
 	if(retno == fail) {
 		return fail;
 	}
-	retno = convertStrDll(argv[3], ip_2);
+	retno = convertStrDll(argv[3], &ip_2);
 	if(retno == fail) {
 		return fail;
 	}
@@ -24,27 +24,27 @@ int main(int argc, int argv[])
 
 	switch (operator) {
 		case '+':
-			retno = addition(ip_1, ip_2, op);
+			retno = addition(&ip_1, &ip_2, &op);
 			if(retno == pass) {
-				display_dll(*op);
+				display_dll(op);
 			}
 			break;
 		case '-':
-			retno = subtraction(ip_1, ip_2, op);
+			retno = subtraction(&ip_1, &ip_2, &op);
 			if(retno == pass) {
-				display_dll(*op);
+				display_dll(op);
 			}
 			break;
 		case '*':
-			retno = multiplication(ip_1, ip_2, op);
+			retno = multiplication(&ip_1, &ip_2, &op);
 			if(retno == pass) {
-				display_dll(*op);
+				display_dll(op);
 			}
 			break;
 		case '/':
-			retno = division(ip_1, ip_2, op);
+			retno = division(&ip_1, &ip_2, &op);
 			if(retno == pass) {
-				display_dll(*op);
+				display_dll(op);
 			}
 			break;
 		default:
