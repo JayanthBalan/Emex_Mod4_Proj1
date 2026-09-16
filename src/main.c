@@ -55,5 +55,6 @@ int main(int argc, char *argv[])
 	freeAllNodes(&ip_2);
 	freeAllNodes(&op);
 
+	fprintf(stderr, "%s>>> Error\n", __FILE__);
 	return retno;
 }
