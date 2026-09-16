@@ -37,6 +37,8 @@ ret_types_e subtraction(Dlist_t *x, Dlist_t *y, Dlist_t *z) {
             return insert_beg(z, 0);
         }
     }
+
+    return fail;
 }
 
 ret_types_e subtractBase(Dlist_t *x, Dlist_t *y, Dlist_t *z) {
