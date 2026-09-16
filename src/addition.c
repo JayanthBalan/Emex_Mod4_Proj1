@@ -76,10 +76,8 @@ ret_types_e addBase2(Dlist_t y, Dlist_t *z) {
             return fail;
         }
     }
-    ux = x.head;
-    if(freeAllNodes(&z->head, &z->tail) == fail) {
-        return fail;
-    }
+    ux = x.tail;
+    freeAllNodes(z);
 
     while(ux != NULL || uy != NULL || carry != 0) {
         sum = carry;
@@ -89,12 +87,14 @@ ret_types_e addBase2(Dlist_t y, Dlist_t *z) {
         sum %= 10;
         
         if(insert_beg(z, sum) == fail) {
+            freeAllNodes(&x);
             return fail;
         }
 
         ux = ux->prev;
         uy = uy->prev;
     }
-
+    
+    freeAllNodes(&x);
     return pass;
 }

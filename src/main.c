@@ -1,14 +1,14 @@
 
 #include "apc.h"
 
-int main(int argc, int argv[])
+int main(int argc, char *argv[])
 {
 	if(argc != 4) {
 		fprintf(stdout, "%s>>> Example Command: ./apc 324 + -1234\n", __FILE__);
 		return fail;
 	}
 
-	Dlist_t ip_1, ip_2, op;
+	Dlist_t ip_1 = {0}, ip_2 = {0}, op = {0};
 	ret_types_e retno;
 
 	retno = convertStrDll(argv[1], &ip_1);
@@ -20,7 +20,7 @@ int main(int argc, int argv[])
 		return fail;
 	}
 
-	char operator = argv[2];
+	char operator = *argv[2];
 
 	switch (operator) {
 		case '+':
@@ -50,6 +50,10 @@ int main(int argc, int argv[])
 		default:
 			fprintf(stderr, "%s>>> Unsupported Operation\n", __FILE__);
 	}
+
+	freeAllNodes(&ip_1);
+	freeAllNodes(&ip_2);
+	freeAllNodes(&op);
 
 	return retno;
 }

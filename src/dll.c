@@ -1,14 +1,22 @@
 
 #include "dll.h"
 
+static int zeroCheck(Dlist_t list) {
+    if(list.head == list.tail && list.head->data == 0) {
+        return 1;
+    }
+    return 0;
+}
+
 void display_dll(Dlist_t dll) {
     node_t *tnode;
-    if(dll.sign == minus) {
+    if(dll.sign == minus && zeroCheck(dll) != 0) {
         fprintf(stdout, "-");
     }
     for(tnode = dll.head; tnode != NULL; tnode = tnode->next) {
-        fprintf(stdout, "%c", (char)tnode->data);
+        fprintf(stdout, "%c", (char)(tnode->data + '0'));
     }
+    fprintf(stdout, "\n");
 }
 
 ret_types_e insert_end(Dlist_t *target, uint8_t data) {
@@ -22,6 +30,7 @@ ret_types_e insert_end(Dlist_t *target, uint8_t data) {
         target->head->next = NULL;
         target->head->prev = NULL;
         target->tail = target->head;
+        target->count = 1;
 
         return pass;
     }
@@ -38,6 +47,8 @@ ret_types_e insert_end(Dlist_t *target, uint8_t data) {
     target->tail->next = tnode;
     target->tail = target->tail->next;
 
+    target->count++;
+
     return pass;
 }
 
@@ -52,6 +63,7 @@ ret_types_e insert_beg(Dlist_t *target, uint8_t data) {
         target->head->next = NULL;
         target->head->prev = NULL;
         target->tail = target->head;
+        target->count = 1;
 
         return pass;
     }
@@ -68,6 +80,8 @@ ret_types_e insert_beg(Dlist_t *target, uint8_t data) {
     target->head->prev = tnode;
     target->head = target->head->prev;
 
+    target->count++;
+
     return pass;
 }
 
@@ -77,6 +91,8 @@ ret_types_e convertStrDll(char *data, Dlist_t *conv_list) {
         return fail;
     }
     if(*data == 0) {
+        free(conv_list->head);
+        conv_list->head = NULL;
         return fail;
     }
 
@@ -84,9 +100,13 @@ ret_types_e convertStrDll(char *data, Dlist_t *conv_list) {
     if(data[i] == '+' || data[i] == '-') {
         i++;
     }
-    for(; data[i] == '0'; i++);
+    for(; data[i] != '\0' && data[i] == '0' && data[i + 1] != '\0'; i++);
+    if(data[i] != '\0') {
+        free(conv_list->head);
+        return fail;
+    }
 
-    conv_list->head->data = (uint8_t)data[i];
+    conv_list->head->data = (uint8_t)(data[i] - '0');
     conv_list->head->next = NULL;
     conv_list->head->prev = NULL;
     conv_list->count = 1;
@@ -100,7 +120,7 @@ ret_types_e convertStrDll(char *data, Dlist_t *conv_list) {
 
     node_t *tnode, *root = conv_list->head;
     for(; data[i] != 0; i++) {
-        if(data[i] != '+' && data[i] != '-' && (data[i] < '0' || data[i] > '9')) {
+        if(data[i] < '0' || data[i] > '9') {
             return fail;
         }
 
@@ -108,7 +128,7 @@ ret_types_e convertStrDll(char *data, Dlist_t *conv_list) {
         if(tnode == NULL) {
             return fail;
         }
-        tnode->data = (uint8_t)data[i];
+        tnode->data = (uint8_t)(data[i] - '0');
         tnode->next = NULL;
         tnode->prev = root;
 
@@ -123,6 +143,10 @@ ret_types_e convertStrDll(char *data, Dlist_t *conv_list) {
         return fail;
     }
 
+    if(zeroCheck(*conv_list) != 0) {
+        conv_list->sign = plus;
+    }
+
     return pass;
 }
 
@@ -134,7 +158,7 @@ int dllCompare(Dlist_t *x, Dlist_t *y) {
         return 1;
     }
     else {
-        node_t *xnode = x->head->data, *ynode = y->head->data;
+        node_t *xnode = x->head, *ynode = y->head;
         while(xnode != NULL && ynode != NULL) {
             if(xnode->data > ynode->data) {
                 return 1;
@@ -151,21 +175,18 @@ int dllCompare(Dlist_t *x, Dlist_t *y) {
     return 0;
 }
 
-ret_types_e freeAllNodes(node_t **head, node_t **tail) {
-    if(*head == NULL || *tail == NULL) {
-        return pass;
+void freeAllNodes(Dlist_t *list) {
+    if(list->head == NULL) {
+        return;
     }
 
-    node_t *hnode = *head, *tnode = *tail;
-    for(; hnode != tnode; hnode = hnode->next, tnode = tnode->prev) {
-        free(hnode);
+    node_t *tnode = list->head;
+    while(list->head != NULL) {
+        list->head = list->head->next;
         free(tnode);
-        hnode->prev = NULL;
-        tnode->next = NULL;
+        tnode = list->head;
     }
-    free(hnode);
-    hnode->prev = NULL;
-    tnode->next = NULL;
 
-    return pass;
+    list->count = 0;
+    list->tail = NULL;
 }

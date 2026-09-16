@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <limits.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef enum ret_types {
 	pass = 0,
@@ -14,6 +15,7 @@ typedef enum ret_types {
 
 typedef enum signType {
 	minus = -1,
+	unknown = 0,
 	plus = 1
 } signType_e;
 
@@ -36,6 +38,6 @@ ret_types_e convertStrDll(char*, Dlist_t*);
 ret_types_e insert_beg(Dlist_t*, uint8_t);
 ret_types_e insert_end(Dlist_t*, uint8_t);
 int dllCompare(Dlist_t*, Dlist_t*);
-ret_types_e freeAllNodes(node_t**, node_t**);
+void freeAllNodes(Dlist_t*);
 
 #endif
