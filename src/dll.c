@@ -11,6 +11,36 @@ void display_dll(Dlist_t dll) {
     }
 }
 
+ret_types_e insert_end(Dlist_t *target, uint8_t data) {
+    if(target->head == NULL || target->tail == NULL) {
+        target->head = (node_t*)malloc(sizeof(node_t));
+        if(target->head == NULL) {
+            return fail;
+        }
+
+        target->head->data = data;
+        target->head->next = NULL;
+        target->head->prev = NULL;
+        target->tail = target->head;
+
+        return pass;
+    }
+
+    node_t *tnode = (node_t*)malloc(sizeof(node_t));
+    if(tnode == NULL) {
+        return fail;
+    }
+    
+    tnode->data = data;
+    tnode->prev = target->tail;
+    tnode->next = NULL;
+    
+    target->tail->next = tnode;
+    target->tail = target->tail->next;
+
+    return pass;
+}
+
 ret_types_e insert_beg(Dlist_t *target, uint8_t data) {
     if(target->head == NULL || target->tail == NULL) {
         target->head = (node_t*)malloc(sizeof(node_t));
@@ -54,6 +84,7 @@ ret_types_e convertStrDll(char *data, Dlist_t *conv_list) {
     if(data[i] == '+' || data[i] == '-') {
         i++;
     }
+    for(; data[i] == '0'; i++);
 
     conv_list->head->data = (uint8_t)data[i];
     conv_list->head->next = NULL;
@@ -91,6 +122,50 @@ ret_types_e convertStrDll(char *data, Dlist_t *conv_list) {
     if(conv_list->count == 1 && (conv_list->head->data == '+' || conv_list->head->data == '-')) {
         return fail;
     }
+
+    return pass;
+}
+
+int dllCompare(Dlist_t *x, Dlist_t *y) {
+    if(x->count < y->count) {
+        return -1;
+    }
+    else if(x->count > y->count) {
+        return 1;
+    }
+    else {
+        node_t *xnode = x->head->data, *ynode = y->head->data;
+        while(xnode != NULL && ynode != NULL) {
+            if(xnode->data > ynode->data) {
+                return 1;
+            }
+            else if(xnode->data < ynode->data) {
+                return -1;
+            }
+            else {
+                xnode = xnode->next;
+                ynode = ynode->next;
+            }
+        }
+    }
+    return 0;
+}
+
+ret_types_e freeAllNodes(node_t **head, node_t **tail) {
+    if(*head == NULL || *tail == NULL) {
+        return pass;
+    }
+
+    node_t *hnode = *head, *tnode = *tail;
+    for(; hnode != tnode; hnode = hnode->next, tnode = tnode->prev) {
+        free(hnode);
+        free(tnode);
+        hnode->prev = NULL;
+        tnode->next = NULL;
+    }
+    free(hnode);
+    hnode->prev = NULL;
+    tnode->next = NULL;
 
     return pass;
 }

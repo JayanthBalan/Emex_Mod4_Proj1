@@ -34,5 +34,8 @@ typedef struct Dlist {
 void display_dll(Dlist_t);
 ret_types_e convertStrDll(char*, Dlist_t*);
 ret_types_e insert_beg(Dlist_t*, uint8_t);
+ret_types_e insert_end(Dlist_t*, uint8_t);
+int dllCompare(Dlist_t*, Dlist_t*);
+ret_types_e freeAllNodes(node_t**, node_t**);
 
 #endif

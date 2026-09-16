@@ -9,4 +9,9 @@ ret_types_e subtraction(Dlist_t*, Dlist_t*, Dlist_t*);
 ret_types_e multiplication(Dlist_t*, Dlist_t*, Dlist_t*);
 ret_types_e division(Dlist_t*, Dlist_t*, Dlist_t*);
 
+ret_types_e subtractBase(Dlist_t*, Dlist_t*, Dlist_t*);
+ret_types_e addBase(Dlist_t*, Dlist_t*, Dlist_t*);
+ret_types_e addBase2(Dlist_t, Dlist_t*);
+ret_types_e multiplyBase(Dlist_t*, Dlist_t*, Dlist_t*);
+
 #endif
