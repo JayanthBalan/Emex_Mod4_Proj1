@@ -2,9 +2,10 @@
 #include "dll.h"
 
 static int zeroCheck(Dlist_t list) {
-    if(list.head == list.tail && list.head->data == 0) {
+    if(list.head != NULL && list.head == list.tail && list.head->data == 0) {
         return 1;
     }
+
     return 0;
 }
 
@@ -20,32 +21,25 @@ void display_dll(Dlist_t dll) {
 }
 
 ret_types_e insert_end(Dlist_t *target, uint8_t data) {
-    if(target->head == NULL || target->tail == NULL) {
-        target->head = (node_t*)malloc(sizeof(node_t));
-        if(target->head == NULL) {
-            return fail;
-        }
+    node_t *tnode;
 
-        target->head->data = data;
-        target->head->next = NULL;
-        target->head->prev = NULL;
-        target->tail = target->head;
-        target->count = 1;
-
-        return pass;
-    }
-
-    node_t *tnode = (node_t*)malloc(sizeof(node_t));
+    tnode = (node_t*)malloc(sizeof(node_t));
     if(tnode == NULL) {
         return fail;
     }
-    
+
     tnode->data = data;
-    tnode->prev = target->tail;
     tnode->next = NULL;
-    
-    target->tail->next = tnode;
-    target->tail = target->tail->next;
+    tnode->prev = target->tail;
+
+    if(target->head == NULL) {
+        target->head = tnode;
+        target->tail = tnode;
+    }
+    else {
+        target->tail->next = tnode;
+        target->tail = tnode;
+    }
 
     target->count++;
 
@@ -53,32 +47,25 @@ ret_types_e insert_end(Dlist_t *target, uint8_t data) {
 }
 
 ret_types_e insert_beg(Dlist_t *target, uint8_t data) {
-    if(target->head == NULL || target->tail == NULL) {
-        target->head = (node_t*)malloc(sizeof(node_t));
-        if(target->head == NULL) {
-            return fail;
-        }
+    node_t *tnode;
 
-        target->head->data = data;
-        target->head->next = NULL;
-        target->head->prev = NULL;
-        target->tail = target->head;
-        target->count = 1;
-
-        return pass;
-    }
-
-    node_t *tnode = (node_t*)malloc(sizeof(node_t));
+    tnode = (node_t*)malloc(sizeof(node_t));
     if(tnode == NULL) {
         return fail;
     }
-    
+
     tnode->data = data;
-    tnode->next = target->head;
     tnode->prev = NULL;
-    
-    target->head->prev = tnode;
-    target->head = target->head->prev;
+    tnode->next = target->head;
+
+    if(target->head == NULL) {
+        target->head = tnode;
+        target->tail = tnode;
+    }
+    else {
+        target->head->prev = tnode;
+        target->head = tnode;
+    }
 
     target->count++;
 
@@ -86,64 +73,51 @@ ret_types_e insert_beg(Dlist_t *target, uint8_t data) {
 }
 
 ret_types_e convertStrDll(char *data, Dlist_t *conv_list) {
-    conv_list->head = (node_t*)malloc(sizeof(node_t));
-    if(conv_list->head == NULL) {
-        return fail;
-    }
-    if(*data == 0) {
-        free(conv_list->head);
-        conv_list->head = NULL;
-        return fail;
-    }
-
     int i = 0;
-    if(data[i] == '+' || data[i] == '-') {
-        i++;
-    }
-    for(; data[i] != '\0' && data[i] == '0' && data[i + 1] != '\0'; i++);
-    if(data[i] != '\0') {
-        free(conv_list->head);
+
+    if(data == NULL || *data == '\0') {
         return fail;
     }
 
-    conv_list->head->data = (uint8_t)(data[i] - '0');
-    conv_list->head->next = NULL;
-    conv_list->head->prev = NULL;
-    conv_list->count = 1;
-
-    if(data[0] == '-') {
-        conv_list->sign = minus;
+    if(data[i] == '+' || data[i] == '-') {
+        if(data[i] == '-') {
+            conv_list->sign = minus;
+        }
+        else {
+            conv_list->sign = plus;
+        }
+        i++;
     }
     else {
         conv_list->sign = plus;
     }
 
-    node_t *tnode, *root = conv_list->head;
-    for(; data[i] != 0; i++) {
-        if(data[i] < '0' || data[i] > '9') {
-            return fail;
-        }
-
-        tnode = (node_t*)malloc(sizeof(node_t));
-        if(tnode == NULL) {
-            return fail;
-        }
-        tnode->data = (uint8_t)(data[i] - '0');
-        tnode->next = NULL;
-        tnode->prev = root;
-
-        root->next = tnode;
-        root = root->next;
-
-        conv_list->count++;
-    }
-    conv_list->tail = root;
-
-    if(conv_list->count == 1 && (conv_list->head->data == '+' || conv_list->head->data == '-')) {
+    if(data[i] == '\0') {
         return fail;
     }
 
-    if(zeroCheck(*conv_list) != 0) {
+    for(; data[i] != '\0'; i++) {
+        if(data[i] < '0' || data[i] > '9') {
+            return fail;
+        }
+    }
+
+    i = 0;
+
+    if(data[0] == '+' || data[0] == '-') {
+        i++;
+    }
+
+    for(; data[i] == '0' && data[i + 1] != '\0'; i++);
+
+    for(; data[i] != '\0'; i++) {
+        if(insert_end(conv_list, (uint8_t)(data[i] - '0')) == fail) {
+            freeAllNodes(conv_list);
+            return fail;
+        }
+    }
+
+    if(conv_list->count == 1 && conv_list->head->data == 0) {
         conv_list->sign = plus;
     }
 

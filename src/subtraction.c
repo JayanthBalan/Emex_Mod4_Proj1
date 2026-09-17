@@ -56,8 +56,36 @@ ret_types_e subtractBase(Dlist_t *x, Dlist_t *y, Dlist_t *z) {
             return fail;
         }
 
-        ux = ux->prev;
-        uy = uy->prev;
+        if(ux != NULL) {
+            ux = ux->prev;
+        }
+        if(uy != NULL) {
+            uy = uy->prev;
+        }
+    }
+
+    return pass;
+}
+
+ret_types_e subtractBase2(Dlist_t *x, Dlist_t *y, Dlist_t *z) {
+    ret_types_e retno;
+
+    retno = subtractBase(x, y, z);
+    if(retno == fail) {
+        return fail;
+    }
+
+    while(z->count > 1 && z->head->data == 0) {
+        node_t *tnode = z->head;
+        z->head = z->head->next;
+        z->head->prev = NULL;
+        free(tnode);
+        z->count--;
+    }
+
+    z->tail = z->head;
+    while(z->tail != NULL && z->tail->next != NULL) {
+        z->tail = z->tail->next;
     }
 
     return pass;

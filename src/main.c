@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 				display_dll(op);
 			}
 			break;
-		case '*':
+		case 'x':
 			retno = multiplication(&ip_1, &ip_2, &op);
 			if(retno == pass) {
 				display_dll(op);
@@ -55,6 +55,9 @@ int main(int argc, char *argv[])
 	freeAllNodes(&ip_2);
 	freeAllNodes(&op);
 
-	fprintf(stderr, "%s>>> Error\n", __FILE__);
+	if(retno == fail) {
+		fprintf(stderr, "%s>>> Command Failed\n", __FILE__);
+	}
+
 	return retno;
 }

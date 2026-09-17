@@ -58,8 +58,12 @@ ret_types_e addBase(Dlist_t *x, Dlist_t *y, Dlist_t *z) {
             return fail;
         }
 
-        ux = ux->prev;
-        uy = uy->prev;
+        if(ux != NULL) {
+            ux = ux->prev;
+        }
+        if(uy != NULL) {
+            uy = uy->prev;
+        }
     }
 
     return pass;
@@ -91,8 +95,12 @@ ret_types_e addBase2(Dlist_t y, Dlist_t *z) {
             return fail;
         }
 
-        ux = ux->prev;
-        uy = uy->prev;
+        if(ux != NULL) {
+            ux = ux->prev;
+        }
+        if(uy != NULL) {
+            uy = uy->prev;
+        }
     }
     
     freeAllNodes(&x);

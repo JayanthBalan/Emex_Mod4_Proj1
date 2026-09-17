@@ -40,10 +40,8 @@ ret_types_e division(Dlist_t *x, Dlist_t *y, Dlist_t *z) {
         normalize(&rem);
         qdigit = 0;
 
-        while(dllCompare(&rem, y) >= 0) {
-            freeAllNodes(&temp);
-
-            if(subtractBase(&rem, y, &temp) == fail) {
+        while(qdigit < 10 && dllCompare(&rem, y) >= 0) {
+            if(subtractBase2(&rem, y, &temp) == fail) {
                 freeAllNodes(&rem);
                 freeAllNodes(&temp);
                 return fail;
