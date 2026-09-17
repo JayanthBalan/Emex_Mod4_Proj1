@@ -65,7 +65,7 @@ run-prog.sh  Test script
 
 ## Testing
 
-> The shell scripts runs use-provided or default input values for all 4 operations of the program.
+> The shell scripts runs user-provided or default input values for all 4 operations of the program.
 
 ```bash
 bash run-prog.sh 1234 4321
