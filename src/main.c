@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
 				display_dll(op);
 			}
 			break;
+		case '*':
 		case 'x':
 			retno = multiplication(&ip_1, &ip_2, &op);
 			if(retno == pass) {

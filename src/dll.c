@@ -11,7 +11,7 @@ static int zeroCheck(Dlist_t list) {
 
 void display_dll(Dlist_t dll) {
     node_t *tnode;
-    if(dll.sign == minus && zeroCheck(dll) != 0) {
+    if(dll.sign == minus && zeroCheck(dll) == 0) {
         fprintf(stdout, "-");
     }
     for(tnode = dll.head; tnode != NULL; tnode = tnode->next) {
